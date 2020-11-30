@@ -1,3 +1,4 @@
+import csv
 import sys
 import os
 import matplotlib.pyplot as plt
@@ -7,55 +8,41 @@ from plsa.pipeline import DEFAULT_PIPELINE
 from plsa.algorithms import PLSA
 
 # Directory that contains the corpus data
-directory = '../CourseProject/data/test/'
-# if we want to loop through all subdirectories
-#for subdir, dirs, files in os.walk(directory):
-#    filenames = os.listdir(subdir)
+directory = '../CourseProject/data/'
 
+with open('plsa.csv', mode='w') as file:
+    fieldnames = ['date', 'topic', 'probability']
+    writer = csv.DictWriter(file, fieldnames=fieldnames)
 
-# Pre-processing pipeline
-pipeline = Pipeline(*DEFAULT_PIPELINE)
-pipeline
+    writer.writeheader()
 
-# Load corpus
-filenames = os.listdir(directory)
-corpus = Corpus.from_xml(directory, pipeline, tag='body', max_files=len(filenames))
-#corpus
+    for subdir, dirs, files in os.walk(directory):
+        # We should look for files in directories with format '../CourseProject/data/<month>/<day>'
+        directory_name = subdir.split('/')
+        if (len(directory_name) != 5):
+            continue
 
-# Run PLSA
-n_topics = 5
-plsa = PLSA(corpus, n_topics, True)
-plsa
+        filenames = os.listdir(subdir)
 
-# Fit a PLSA model
-result = plsa.fit()
-result = plsa.best_of(5)
+        # Pre-processing pipeline
+        pipeline = Pipeline(*DEFAULT_PIPELINE)
 
-# examine result
-#print(result.topic) # relative prevalence of individual topics found
-#print(result.word_given_topic) # for individual topics, see how important each word is for the topics
+        # Load corpus
+        corpus = Corpus.from_xml(subdir, pipeline, tag='body', max_files=len(filenames))
 
-# Visualize the results
-visualize = Visualize(result)
+        # Run PLSA
+        n_topics = 5
+        plsa = PLSA(corpus, n_topics, True)
 
-# convergence
-fig, ax = plt.subplots()
-_ = visualize.convergence(ax)
-fig.tight_layout()
+        # Fit a PLSA model
+        result = plsa.fit()
+        result = plsa.best_of(5)
 
-# relative topic importance
-fig, ax = plt.subplots()
-_ = visualize.topics(ax)
-fig.tight_layout()
+        first_tuple = result.word_given_topic[0][:1]
+        date = directory_name[3] + '/' + directory_name[4] + '/00'
 
-# topics
-fig = plt.figure(figsize=(9.4, 10))
-_ = visualize.wordclouds(fig)
-fig.tight_layout()
+        writer.writerow({'date': date, 'topic': first_tuple[0][0], 'probability': first_tuple[0][1]})
 
-# topic importance in a doc
-fig, ax = plt.subplots()
-_ = visualize.topics_in_doc(0, ax)
-fig.tight_layout()
+        print(subdir)
+        print(result.word_given_topic[0][:1])
 
-plt.show()
