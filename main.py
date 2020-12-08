@@ -38,11 +38,13 @@ with open('plsa.csv', mode='w') as file:
         result = plsa.fit()
         result = plsa.best_of(5)
 
-        first_tuple = result.word_given_topic[0][:1]
+        tuples = result.word_given_topic[0][:n_topics]
         date = directory_name[3] + '/' + directory_name[4] + '/00'
 
-        writer.writerow({'date': date, 'topic': first_tuple[0][0], 'probability': first_tuple[0][1]})
+        for t in tuples:
+            writer.writerow({'date': date, 'topic': t[0], 'probability': t[1]})
 
+        print(result.topic)
         print(subdir)
-        print(result.word_given_topic[0][:1])
+        print(tuples)
 
