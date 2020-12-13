@@ -3,9 +3,9 @@ import sys
 import os
 import matplotlib.pyplot as plt
 
-from plsa import Corpus, Pipeline, Visualize
-from plsa.pipeline import DEFAULT_PIPELINE
-from plsa.algorithms import PLSA
+from prior_plsa import Corpus, Pipeline, Visualize
+from prior_plsa.pipeline import DEFAULT_PIPELINE
+from prior_plsa.algorithms import PriorPLSA
 
 # Directory that contains the corpus data
 directory = 'data'
@@ -30,13 +30,13 @@ with open('plsa_new.csv', mode='w') as file:
         # Load corpus
         corpus = Corpus.from_xml(subdir, pipeline, tag='body', max_files=min(10,len(filenames)))
 
-        # Run PLSA
+        # Run PriorPLSA
         n_topics = 3
-        plsa = PLSA(corpus, n_topics, True)
+        prior_plsa = PriorPLSA(corpus, n_topics, True)
 
         # Fit a PLSA model
-        result = plsa.fit()
-        #result = plsa.best_of(5)
+        result = prior_plsa.fit()
+        #result = prior_plsa.best_of(5)
 
         tuples = result.word_given_topic[0][:n_topics]
         date = directory_name[1] + '/' + directory_name[2] + '/00'
