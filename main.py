@@ -1,5 +1,5 @@
 import pandas as pd
-import granger
+import analysis
 import plsa_with_prior
 import plsa_without_prior
 
@@ -68,9 +68,9 @@ df_all_normalized = df_all_normalized[df_all_normalized.NormalizedPrice != -1]
 # We input the list of topics for each day and its respective probability which is retrieved by the PLSA algorithm below.
 # df_plsa is a new dataframe containing the data we would like
 plsa_without_prior.plsa_without_prior_run()
-min_probability = granger.granger_run('plsa_without_prior.csv', df_all_normalized)
+min_probability = analysis.granger_run('plsa_without_prior.csv', df_all_normalized)
 
 # We run PLSA with priors until all topics have confidence of 95%+.
 while min_probability < 0.95:
     plsa_with_prior.plsa_with_prior_run()
-    min_probability = granger.granger_run('plsa_with_prior.csv', df_all_normalized)
+    min_probability = analysis.granger_run('plsa_with_prior.csv', df_all_normalized)
