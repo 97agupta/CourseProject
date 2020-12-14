@@ -8,6 +8,8 @@ from statsmodels.tsa.stattools import grangercausalitytests
 
 
 def granger_run(plsa_file, df_all_normalized):
+    
+    #This is a granger test running to find relevent topics based on an external time series
 
     min_probability = 1.0
     df_plsa = pd.read_csv(plsa_file, error_bad_lines=False)
@@ -39,6 +41,8 @@ def granger_run(plsa_file, df_all_normalized):
             print(res)
         except:
             continue
+            
+    # This is a pearson test to find relevant words within a topic based on an external CSV 
 
     # We find relevant words for each topic, and create a new CSV 'words_per_topic.csv'.
     # We also create a new CSV 'word_frequency.csv' with each word and its frequency throughout each day's files.
