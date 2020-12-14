@@ -18,10 +18,11 @@ def plsa_without_prior_run():
 
         for subdir, dirs, files in os.walk(directory):
             # We should look for files in directories with format '../CourseProject/data/<month>/<day>'
-            directory_name = subdir.split('/')
-            print(directory_name)
+            directory_name = subdir.split('\\')
             if len(directory_name) != 3:
                 continue
+
+            print(directory_name)
 
             filenames = os.listdir(subdir)
 
@@ -46,7 +47,9 @@ def plsa_without_prior_run():
             for t in tuples:
                 writer.writerow({'date': date, 'topic': t[0], 'probability': t[1]})
 
-            print(result.topic)
-            print(subdir)
-            print(tuples)
+            #print(result.topic)
+            #print(subdir)
+            #print(tuples)
+            
+plsa_without_prior_run()
 

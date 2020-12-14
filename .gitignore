@@ -1,7 +1,9 @@
 .DS_Store
 .DS_Store?
 .ipynb_checkpoints
-data/
 __pycache__
 nltk_data
 .idea
+data/*
+!data/Iter_1
+!data/Iter_2

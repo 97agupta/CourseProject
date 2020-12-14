@@ -24,6 +24,8 @@ def plsa_with_prior_run():
             if len(directory_name) != 3:
                 continue
 
+            print(directory_name)
+
             filenames = os.listdir(subdir)
 
             # Pre-processing pipeline
@@ -31,7 +33,7 @@ def plsa_with_prior_run():
 
             # Load corpus
             # Add max_files=min(10, len(filenames)) to limit number of files read
-            corpus = Corpus.from_xml(subdir, pipeline, tag='body', max_files=min(10, len(filenames)))
+            corpus = Corpus.from_xml(subdir, pipeline, tag='body', max_files=len(filenames))
 
             # Run PriorPLSA
             n_topics = 5
@@ -50,15 +52,16 @@ def plsa_with_prior_run():
             for t in tuples:
                 writer.writerow({'date': date, 'topic': t[0], 'probability': t[1]})
 
-            print(result.topic)
-            print(subdir)
-            print(tuples)
+            #print(result.topic)
+            #print(subdir)
+            #print(tuples)
 
 def load_priors(n_topics: int, corpus: Corpus) -> ndarray:
     prior: ndarray = np.zeros((corpus.n_words, n_topics))
     prev_topic: str = None
     topic_id: int = -1
 
+    wordsFound = 0
     with open('prior_csvs\\combined_priors.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         next(csv_reader) # skip header
@@ -72,10 +75,12 @@ def load_priors(n_topics: int, corpus: Corpus) -> ndarray:
             word = row[1]
             probability = row[2]
             if word in corpus.index:
+                wordsFound += 1
+                #print(f"Found word {word} in corpus for topic: {topic}")
                 wordIndex = corpus.index[word]
                 prior[wordIndex][topic_id] = float(probability)
 
-    #print(prior)
+    #print(f"wordsFound: {wordsFound} Non-zero elements: {np.count_nonzero(prior)}")
     return prior
 
-# plsa_with_prior_run()
+plsa_with_prior_run()
