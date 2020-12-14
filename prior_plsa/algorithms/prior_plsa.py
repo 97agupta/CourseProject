@@ -1,9 +1,10 @@
-from numpy import empty, einsum, ndarray
+from numpy import empty, einsum, ndarray, finfo
 
 from ..corpus import Corpus
 from .result import PlsaResult
 from .base import BasePLSA
 
+MACHINE_PRECISION = finfo(float).eps
 
 class PriorPLSA(BasePLSA):
     """Implements probabilistic latent semantic analysis (PLSA).
