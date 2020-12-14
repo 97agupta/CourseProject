@@ -55,7 +55,7 @@ def plsa_with_prior_run():
             print(tuples)
 
 def load_priors(n_topics: int, corpus: Corpus) -> ndarray:
-    prior: ndarray = np.zeros((n_topics, corpus.n_words))
+    prior: ndarray = np.zeros((corpus.n_words, n_topics))
     prev_topic: str = None
     topic_id: int = -1
 
@@ -73,8 +73,9 @@ def load_priors(n_topics: int, corpus: Corpus) -> ndarray:
             probability = row[2]
             if word in corpus.index:
                 wordIndex = corpus.index[word]
-                prior[topic_id][wordIndex] = float(probability)
+                prior[wordIndex][topic_id] = float(probability)
 
     #print(prior)
+    return prior
 
 # plsa_with_prior_run()
